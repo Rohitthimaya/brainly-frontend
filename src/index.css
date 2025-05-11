@@ -1,0 +1,10 @@
+@import "tailwindcss";
+
+:root {
+    --gray-200: #e6e9ed;
+    --gray-100: #eeeeef;
+    --gray-600: #95989c;
+    --purple-600: #7164c0;
+    --purple-200: #d9ddee;
+    --purple-500: #9492db;
+}
