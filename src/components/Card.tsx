@@ -3,7 +3,7 @@ import { ShareIcon } from "../icons/ShareIcon";
 interface CardProps {
     title: string;
     link: string;
-    type: "twitter" | "youtube"
+    type: "tweet" | "youtube"
 }
 
 export function Card({ title, link, type }: CardProps) {
