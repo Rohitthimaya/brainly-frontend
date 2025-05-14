@@ -26,7 +26,6 @@ export function Dashboard() {
           <Button variant={'secondary'} text={'Share brain'} startIcon={<ShareIcon />} />
         </div>
         <div className='flex gap-4 flex-wrap'>
-          {JSON.stringify(contents)}
           {contents.map(({type, link, title}) => 
             <Card type={type} link={link} title={title}/>
           )}
