@@ -30,7 +30,6 @@ export function Dashboard() {
           {contents.map(({type, link, title}) => 
             <Card type={type} link={link} title={title}/>
           )}
-          <Card type="tweet" link="https://x.com/aaditsh/status/1921922026429923449" title="Twww"/>
         </div>
       </div>
     </div>
