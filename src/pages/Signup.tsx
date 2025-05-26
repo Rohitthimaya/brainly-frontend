@@ -32,6 +32,9 @@ export function Signup() {
             <div className="flex justify-center pt-4">
                 <Button onClick={signup} loading={false} variant="primary" text="Sign Up" fullWidth={true} />
             </div>
+            <div className="flex justify-center pt-4">
+                <Button onClick={ () => { navigate("/signin") }} loading={false} variant="secondary" text="Sign In" fullWidth={true}/>
+            </div>
 
         </div>
     </div>
