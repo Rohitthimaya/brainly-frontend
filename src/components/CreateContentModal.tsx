@@ -10,7 +10,7 @@ enum ContentType {
     Twitter = "tweet"
 }
 
-export function CreateContentModal({ open, onClose }) {
+export function CreateContentModal({ open, onClose, onContentCreated }) {
     const titleRef = useRef<HTMLInputElement>(null);
     const linkRef = useRef<HTMLInputElement>(null);
     const [type, setType] = useState(ContentType.Youtube);
@@ -28,6 +28,9 @@ export function CreateContentModal({ open, onClose }) {
                 "Authorization": "Bearer " + localStorage.getItem("token")
             }
         })
+
+        onClose()
+        onContentCreated()
     }
 
     return (

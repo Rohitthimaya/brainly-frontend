@@ -1,20 +1,15 @@
 import { useEffect } from "react";
 import { ShareIcon } from "../icons/ShareIcon";
-import { DeleteIcon } from "../icons/DeleteIcon";
 import { TwitterIcon } from "../icons/TwitterIcon";
 import { YoutubeIcon } from "../icons/YoutubeIcon";
-import axios from "axios";
-import { BACKEND_URL } from "../config";
 
 interface CardProps {
     title: string;
     link: string;
     type: "tweet" | "youtube";
-    id?: string;
-    onDelete?: () => void;
 }
 
-export function Card({ title, link, type, id, onDelete }: CardProps) {
+export function Card2({ title, link, type}: CardProps) {
     useEffect(() => {
         if (type === "tweet") {
             // Load Twitter script if not already loaded
@@ -28,26 +23,7 @@ export function Card({ title, link, type, id, onDelete }: CardProps) {
             }
         }
     }, [type, link]);
-    
-    const deleteContent = async () => {
-        try {
-            const response = await axios.delete(`${BACKEND_URL}/api/v1/content`, {
-                headers: {
-                    "Authorization": "Bearer " + localStorage.getItem("token")
-                  },
-                data: {
-                    contentId: id
-                }
-            });
-    
-            if (response.status === 200) {
-                console.log("Deleted successfully");
-                onDelete()
-            }
-        } catch (error) {
-            console.error("Failed to delete:", error);
-        }
-    };
+
     
 
     return (
@@ -64,9 +40,6 @@ export function Card({ title, link, type, id, onDelete }: CardProps) {
                         <a href={link} target="_blank" rel="noopener noreferrer">
                             <ShareIcon />
                         </a>
-                    </div>
-                    <div onClick={deleteContent} className="pr2 cursor-pointer text-gray-500">
-                        <DeleteIcon />
                     </div>
                 </div>
             </div>
