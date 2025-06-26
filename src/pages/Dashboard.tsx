@@ -13,6 +13,7 @@ import { BACKEND_URL } from '../config';
 import { Loader } from '../components/Loader';
 import { Logout } from '../icons/LogoutIcon';
 import { useHash } from '../hooks/useHash';
+import { Sparkles } from 'lucide-react';
 
 export function Dashboard() {
   const [modalOpen, setModalOpen] = useState(false)
@@ -83,6 +84,15 @@ export function Dashboard() {
           </div>
 
           {/* Right side logout */}
+         <div className='flex gap-4'>
+         <Button
+          startIcon={<Sparkles className="w-6 h-6" />}
+            onClick={() => {
+              navigate("/ask");
+            }}
+            variant='primary'
+            text='Ask AI'
+          />
           <Button
           startIcon={<Logout />}
             onClick={() => {
@@ -93,6 +103,7 @@ export function Dashboard() {
             variant='primary'
             text='Logout'
           />
+         </div>
         </div>
 
         {/* Content Cards */}

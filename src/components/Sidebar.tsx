@@ -1,5 +1,6 @@
 import { Home } from "../icons/Home";
 import { Logo } from "../icons/Logo";
+import { PdfIcon } from "../icons/PdfIcon";
 import { TwitterIcon } from "../icons/TwitterIcon";
 import { YoutubeIcon } from "../icons/YoutubeIcon";
 import { SidebarItem } from "./SidebarItem";
@@ -37,6 +38,12 @@ export function Sidebar({
             text="YouTube"
             active={activeFilter === "youtube"}
             onClick={() => onFilterChange("youtube")}
+          />
+          <SidebarItem
+            icon={<PdfIcon />}
+            text="Documents"
+            active={activeFilter === "pdf"}
+            onClick={() => onFilterChange("pdf")}
           />
         </div>
       </div>

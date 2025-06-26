@@ -9,7 +9,7 @@ import { BACKEND_URL } from "../config";
 interface CardProps {
     title: string;
     link: string;
-    type: "tweet" | "youtube";
+    type: "tweet" | "youtube" | "pdf";
     id?: string;
     onDelete?: () => void;
 }
@@ -28,18 +28,18 @@ export function Card({ title, link, type, id, onDelete }: CardProps) {
             }
         }
     }, [type, link]);
-    
+
     const deleteContent = async () => {
         try {
             const response = await axios.delete(`${BACKEND_URL}/api/v1/content`, {
                 headers: {
                     "Authorization": "Bearer " + localStorage.getItem("token")
-                  },
+                },
                 data: {
                     contentId: id
                 }
             });
-    
+
             if (response.status === 200) {
                 console.log("Deleted successfully");
                 onDelete()
@@ -48,14 +48,14 @@ export function Card({ title, link, type, id, onDelete }: CardProps) {
             console.error("Failed to delete:", error);
         }
     };
-    
+
 
     return (
         <div className="p-4 bg-white rounded-md border-gray-200 max-w-72 border min-h-48 min-w-72">
             <div className="flex justify-between">
                 <div className="flex items-center text-md">
                     <div className="text-gray-500 pr-2">
-                        {type == "youtube" ? <YoutubeIcon/> : <TwitterIcon />}
+                        {type == "youtube" ? <YoutubeIcon /> : <TwitterIcon />}
                     </div>
                     {title}
                 </div>
@@ -81,10 +81,17 @@ export function Card({ title, link, type, id, onDelete }: CardProps) {
                         referrerPolicy="strict-origin-when-cross-origin"
                         allowFullScreen
                     ></iframe>
-                ) : (
+                ) : type == "tweet" ? (
                     <blockquote className="twitter-tweet">
                         <a href={link.replace("x.com", "twitter.com")}></a>
                     </blockquote>
+                ) : (
+                    <iframe
+                        src={link}
+                        title="PDF viewer"
+                        className="w-full h-64 border"
+                    />
+
                 )}
             </div>
         </div>
