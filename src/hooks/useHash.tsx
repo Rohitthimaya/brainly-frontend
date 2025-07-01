@@ -1,13 +1,18 @@
-// src/contexts/HashContext.js
-import { createContext, useContext, useState } from "react";
+// src/contexts/HashContext.tsx
+import { createContext, useContext, useState, ReactNode } from "react";
 
-const HashContext = createContext({
+interface HashContextType {
+  hash: string;
+  setHash: (v: string) => void;
+}
+
+const HashContext = createContext<HashContextType>({
   hash: '',
-  setHash: (v: any) => {}
+  setHash: () => {}
 });
 
-export const HashProvider = ({ children }) => {
-  const [hash, setHash] = useState("");
+export const HashProvider = ({ children }: { children: ReactNode }) => {
+  const [hash, setHash] = useState('');
 
   return (
     <HashContext.Provider value={{ hash, setHash }}>

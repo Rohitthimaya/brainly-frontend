@@ -12,8 +12,9 @@ import axios from 'axios';
 import { BACKEND_URL } from '../config';
 import { Loader } from '../components/Loader';
 import { Logout } from '../icons/LogoutIcon';
-import { useHash } from '../hooks/useHash';
+// import { useHash } from '../hooks/useHash';
 import { Sparkles } from 'lucide-react';
+import Askai from './Askai';
 
 export function Dashboard() {
   const [modalOpen, setModalOpen] = useState(false)
@@ -21,8 +22,8 @@ export function Dashboard() {
   const navigate = useNavigate();
   const { isLoggedIn, setIsLoggedIn } = useAuth();
   const [isLoading, setIsLoading] = useState(true)
-  const [filter, setFilter] = useState("all")
-  const { setHash } = useHash(); 
+  const [filter, setFilter] = useState("home")
+  // const { setHash } = useHash(); 
 
   useEffect(() => {
     if (!isLoggedIn) {
@@ -84,36 +85,51 @@ export function Dashboard() {
           </div>
 
           {/* Right side logout */}
-         <div className='flex gap-4'>
-         <Button
-          startIcon={<Sparkles className="w-6 h-6" />}
-            onClick={() => {
-              navigate("/ask");
-            }}
-            variant='primary'
-            text='Ask AI'
-          />
-          <Button
-          startIcon={<Logout />}
-            onClick={() => {
-              setIsLoggedIn(false);
-              localStorage.removeItem("token");
-              navigate("/signin");
-            }}
-            variant='primary'
-            text='Logout'
-          />
-         </div>
+          <div className='flex gap-4'>
+            {/* <Button
+              startIcon={<Sparkles className="w-6 h-6" />}
+              onClick={() => {
+                navigate("/ask");
+              }}
+              variant='primary'
+              text='Ask AI'
+            /> */}
+            <Button
+              startIcon={<Logout />}
+              onClick={() => {
+                setIsLoggedIn(false);
+                localStorage.removeItem("token");
+                navigate("/signin");
+              }}
+              variant='primary'
+              text='Logout'
+            />
+          </div>
         </div>
 
         {/* Content Cards */}
-        <div className='flex gap-4 flex-wrap'>
-          {contents.filter(({ type }) => filter === "all" || type === filter).map(({ type, link, title, _id }) => (
-            <Card key={link} type={type} link={link} title={title} id={_id} onDelete={refresh} />
-          ))}
+          {filter === "home" ? (
+           <div className="w-full">
+            <Askai />
+         </div>
+          ) : (
+            <div className="flex gap-4 flex-wrap">
+              {contents
+                .filter(({ type }) => type === filter || filter === "all")
+                .map(({ type, link, title, _id }) => (
+                  <Card
+                    key={_id}
+                    type={type}
+                    link={link}
+                    title={title}
+                    id={_id}
+                    onDelete={refresh}
+                  />
+                ))}
+            </div>
+          )}
         </div>
       </div>
-    </div>
   );
 
 }

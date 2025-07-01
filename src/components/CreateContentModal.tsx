@@ -1,9 +1,10 @@
-import { useRef, useState } from "react";
+import { useRef, useState, useEffect } from "react";
 import axios from "axios";
 import { BACKEND_URL } from "../config";
 import { XMarkIcon, DocumentArrowUpIcon, LinkIcon, VideoCameraIcon } from "@heroicons/react/24/outline";
 import { Button } from "./Button";
 import { Input } from "./Input";
+// import { PlusIcon } from "../icons/PlusIcon";
 
 enum ContentType {
     Youtube = "youtube",
@@ -11,13 +12,29 @@ enum ContentType {
     Pdf = "pdf"
 }
 
-export function CreateContentModal({ open, onClose, onContentCreated }) {
+interface CreateContentModalProps {
+    open: boolean;
+    onClose: () => void;
+    onContentCreated: () => void;
+}
+
+export function CreateContentModal({ open, onClose, onContentCreated }: CreateContentModalProps) {
     const titleRef = useRef<HTMLInputElement>(null);
     const linkRef = useRef<HTMLInputElement>(null);
     const fileRef = useRef<HTMLInputElement>(null);
     const [type, setType] = useState<ContentType>(ContentType.Youtube);
     const [uploading, setUploading] = useState(false);
     const [error, setError] = useState("");
+    const [selectedFileName, setSelectedFileName] = useState<string | null>(null);
+
+    useEffect(() => {
+        if (!open) {
+            setSelectedFileName(null);
+            if (fileRef.current) {
+                fileRef.current.value = ""; // clear the input manually
+            }
+        }
+    }, [open]);
 
     async function addContent() {
         const title = titleRef.current?.value;
@@ -42,7 +59,6 @@ export function CreateContentModal({ open, onClose, onContentCreated }) {
                 await axios.post(`${BACKEND_URL}/api/v1/content`, formData, {
                     headers: {
                         "Authorization": "Bearer " + localStorage.getItem("token"),
-                        "Content-Type": "multipart/form-data"
                     }
                 });
             } else {
@@ -91,19 +107,26 @@ export function CreateContentModal({ open, onClose, onContentCreated }) {
 
                     {type === ContentType.Pdf ? (
                         <div>
-                            <div>
-                                <label className="text-sm font-medium text-gray-700">Upload PDF</label>
-                                <div className="mt-2">
-                                    <label className="inline-flex items-center px-4 py-2 bg-blue-600 text-white text-sm font-medium rounded-md cursor-pointer hover:bg-blue-700">
-                                        Choose PDF
-                                        <input
-                                            type="file"
-                                            accept="application/pdf"
-                                            ref={fileRef}
-                                            className="hidden"
-                                        />
-                                    </label>
-                                </div>
+                            <label className="text-sm font-medium text-gray-700">Upload PDF</label>
+                            <div className="mt-2">
+                                <label className="inline-flex items-center px-4 py-2 bg-blue-600 text-white text-sm font-medium rounded-md cursor-pointer hover:bg-blue-700">
+                                    Choose PDF
+                                    <input
+                                        type="file"
+                                        accept="application/pdf"
+                                        ref={fileRef}
+                                        className="hidden"
+                                        onChange={(e) => {
+                                            const file = e.target.files?.[0];
+                                            if (file) {
+                                                setSelectedFileName(file.name);
+                                            }
+                                        }}
+                                    />
+                                </label>
+                                {selectedFileName && (
+                                    <p className="mt-2 text-sm text-gray-600">Selected: {selectedFileName}</p>
+                                )}
                             </div>
                         </div>
                     ) : (
@@ -139,8 +162,9 @@ export function CreateContentModal({ open, onClose, onContentCreated }) {
 
                     {error && <p className="text-red-500 text-sm">{error}</p>}
 
-                    <div className="text-center">
+                    <div className="">
                         <Button
+                            // startIcon={<PlusIcon />}
                             onClick={addContent}
                             text={uploading ? "Uploading..." : "Submit"}
                             variant="primary"
@@ -153,7 +177,17 @@ export function CreateContentModal({ open, onClose, onContentCreated }) {
     );
 }
 
-function ContentTypeButton({ icon, label, active, onClick }) {
+function ContentTypeButton({
+    icon,
+    label,
+    active,
+    onClick,
+}: {
+    icon: React.ReactNode;
+    label: string;
+    active: boolean;
+    onClick: () => void;
+}) {
     return (
         <button
             onClick={onClick}

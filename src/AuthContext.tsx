@@ -5,7 +5,7 @@ const AuthContext = createContext({
   setIsLoggedIn: (v: boolean) => {},
 });
 
-export function AuthProvider({ children }) {
+export function AuthProvider({ children }: { children: React.ReactNode }) {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
 
   useEffect(() => {

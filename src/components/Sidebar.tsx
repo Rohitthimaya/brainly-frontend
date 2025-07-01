@@ -1,3 +1,4 @@
+import { useNavigate } from "react-router-dom";
 import { Home } from "../icons/Home";
 import { Logo } from "../icons/Logo";
 import { PdfIcon } from "../icons/PdfIcon";
@@ -6,47 +7,48 @@ import { YoutubeIcon } from "../icons/YoutubeIcon";
 import { SidebarItem } from "./SidebarItem";
 
 export function Sidebar({
-    onFilterChange,
-    activeFilter
-  }: {
-    onFilterChange: (type: string) => void,
-    activeFilter: string
-  }) {
-    return (
-      <div className="h-screen bg-white border-r w-72 fixed absolute left-0 top-0 pl-6">
-        <div className="flex text-2xl pt-8">
-          <div className="pr-2 text-[var(--purple-600)]">
-            <Logo />
-          </div>
-          Brainly
-        </div>
-        <div className="pt-8 pl-4">
-        <SidebarItem
-            icon={<Home />}
-            text="Home"
-            active={activeFilter === "all"}
-            onClick={() => onFilterChange("all")}
-          />
-          <SidebarItem
-            icon={<TwitterIcon />}
-            text="Twitter"
-            active={activeFilter === "tweet"}
-            onClick={() => onFilterChange("tweet")}
-          />
-          <SidebarItem
-            icon={<YoutubeIcon />}
-            text="YouTube"
-            active={activeFilter === "youtube"}
-            onClick={() => onFilterChange("youtube")}
-          />
-          <SidebarItem
-            icon={<PdfIcon />}
-            text="Documents"
-            active={activeFilter === "pdf"}
-            onClick={() => onFilterChange("pdf")}
-          />
-        </div>
+  onFilterChange,
+  activeFilter,
+}: {
+  onFilterChange: (type: string) => void;
+  activeFilter: string;
+}) {
+  const navigate = useNavigate();
+  return (
+    <aside className="h-screen w-72 bg-white border-r shadow-sm fixed top-0 left-0 flex flex-col px-6 py-8">
+      {/* Logo */}
+      <div className="flex items-center gap-2 text-2xl font-bold text-[--purple-600]">
+        <Logo />
+        <span className="text-[var(--purple-600)]">Brainly</span>
       </div>
-    );
-  }
-  
+
+      {/* Nav Items */}
+      <nav className="mt-10 flex flex-col gap-2 text-sm">
+        <SidebarItem
+          icon={<Home />}
+          text="Home"
+          active={activeFilter === "home"}
+          onClick={() => onFilterChange("home")}  // ✅ change here
+        />
+        <SidebarItem
+          icon={<TwitterIcon />}
+          text="Twitter"
+          active={activeFilter === "tweet"}
+          onClick={() => onFilterChange("tweet")}
+        />
+        <SidebarItem
+          icon={<YoutubeIcon />}
+          text="YouTube"
+          active={activeFilter === "youtube"}
+          onClick={() => onFilterChange("youtube")}
+        />
+        <SidebarItem
+          icon={<PdfIcon />}
+          text="PDF"
+          active={activeFilter === "pdf"}
+          onClick={() => onFilterChange("pdf")}
+        />
+      </nav>
+    </aside>
+  );
+}

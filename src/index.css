@@ -7,4 +7,10 @@
     --purple-600: #7164c0;
     --purple-200: #d9ddee;
     --purple-500: #9492db;
+    --gray-900: #111827;
+    --gray-700: #374151;
+    --gray-200: #e5e7eb;
+    --primary: #6366f1;
+    --primary-dark: #4f46e5;
+    --gradient-stripe: linear-gradient(120deg, #7164c0, #9492db, #d9ddee);
 }
