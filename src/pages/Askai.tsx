@@ -45,7 +45,7 @@ export default function Search() {
 
       {/* Gradient Header */}
       <div className="w-full max-w-6xl bg-[linear-gradient(120deg,_#7164c0,_#9492db,_#d9ddee)] rounded-3xl shadow-md px-8 py-6 text-white mb-8">
-        <div className="text-3xl sm:text-4xl font-bold">Ask Brainly AI</div>
+        <div className="text-3xl sm:text-4xl font-bold">Ask Recalr AI</div>
         <div className="text-sm sm:text-base mt-2 text-purple-100">Get answers from your uploaded content</div>
       </div>
 

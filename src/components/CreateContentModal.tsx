@@ -4,12 +4,12 @@ import { BACKEND_URL } from "../config";
 import { XMarkIcon, DocumentArrowUpIcon, LinkIcon, VideoCameraIcon } from "@heroicons/react/24/outline";
 import { Button } from "./Button";
 import { Input } from "./Input";
-// import { PlusIcon } from "../icons/PlusIcon";
 
 enum ContentType {
     Youtube = "youtube",
     Twitter = "tweet",
-    Pdf = "pdf"
+    Pdf = "pdf",
+    Docx = "docx",
 }
 
 interface CreateContentModalProps {
@@ -31,7 +31,7 @@ export function CreateContentModal({ open, onClose, onContentCreated }: CreateCo
         if (!open) {
             setSelectedFileName(null);
             if (fileRef.current) {
-                fileRef.current.value = ""; // clear the input manually
+                fileRef.current.value = "";
             }
         }
     }, [open]);
@@ -41,7 +41,7 @@ export function CreateContentModal({ open, onClose, onContentCreated }: CreateCo
         const link = linkRef.current?.value;
         const file = fileRef.current?.files?.[0];
 
-        if (!title || (type !== ContentType.Pdf && !link)) {
+        if (!title || (![ContentType.Pdf, ContentType.Docx].includes(type) && !link)) {
             setError("All fields are required.");
             return;
         }
@@ -50,7 +50,7 @@ export function CreateContentModal({ open, onClose, onContentCreated }: CreateCo
         setError("");
 
         try {
-            if (type === ContentType.Pdf && file) {
+            if ([ContentType.Pdf, ContentType.Docx].includes(type) && file) {
                 const formData = new FormData();
                 formData.append("type", type);
                 formData.append("title", title || file.name);
@@ -87,12 +87,9 @@ export function CreateContentModal({ open, onClose, onContentCreated }: CreateCo
 
     return (
         <div className="fixed inset-0 z-50 flex items-center justify-center">
-            {/* Backdrop */}
             <div className="fixed inset-0 bg-black/30 backdrop-blur-sm"></div>
 
-            {/* Modal Card */}
             <div className="bg-white shadow-2xl rounded-2xl p-6 w-full max-w-md z-10 space-y-5 relative animate-fade-in">
-                {/* Close Button */}
                 <button onClick={onClose} className="absolute top-3 right-3 p-1 text-gray-500 hover:text-red-600">
                     <XMarkIcon className="h-5 w-5" />
                 </button>
@@ -105,15 +102,21 @@ export function CreateContentModal({ open, onClose, onContentCreated }: CreateCo
                         <Input reference={titleRef} placeholder="Enter title" />
                     </div>
 
-                    {type === ContentType.Pdf ? (
+                    {[ContentType.Pdf, ContentType.Docx].includes(type) ? (
                         <div>
-                            <label className="text-sm font-medium text-gray-700">Upload PDF</label>
+                            <label className="text-sm font-medium text-gray-700">Upload {type.toUpperCase()}</label>
                             <div className="mt-2">
                                 <label className="inline-flex items-center px-4 py-2 bg-blue-600 text-white text-sm font-medium rounded-md cursor-pointer hover:bg-blue-700">
-                                    Choose PDF
+                                    Choose File
                                     <input
                                         type="file"
-                                        accept="application/pdf"
+                                        accept={
+                                            type === ContentType.Pdf
+                                                ? "application/pdf"
+                                                : type === ContentType.Docx
+                                                    ? "application/vnd.openxmlformats-officedocument.wordprocessingml.document"
+                                                    : "application/vnd.openxmlformats-officedocument.presentationml.presentation"
+                                        }
                                         ref={fileRef}
                                         className="hidden"
                                         onChange={(e) => {
@@ -138,7 +141,7 @@ export function CreateContentModal({ open, onClose, onContentCreated }: CreateCo
 
                     <div>
                         <label className="text-sm font-medium text-gray-700">Content Type</label>
-                        <div className="flex gap-2 mt-1">
+                        <div className="flex gap-2 mt-1 flex-wrap">
                             <ContentTypeButton
                                 icon={<VideoCameraIcon className="w-4 h-4" />}
                                 label="YouTube"
@@ -157,6 +160,13 @@ export function CreateContentModal({ open, onClose, onContentCreated }: CreateCo
                                 active={type === ContentType.Pdf}
                                 onClick={() => setType(ContentType.Pdf)}
                             />
+                            <ContentTypeButton
+                                icon={<DocumentArrowUpIcon className="w-4 h-4" />}
+                                label="DOCX"
+                                active={type === ContentType.Docx}
+                                onClick={() => setType(ContentType.Docx)}
+                            />
+
                         </div>
                     </div>
 
@@ -164,7 +174,6 @@ export function CreateContentModal({ open, onClose, onContentCreated }: CreateCo
 
                     <div className="">
                         <Button
-                            // startIcon={<PlusIcon />}
                             onClick={addContent}
                             text={uploading ? "Uploading..." : "Submit"}
                             variant="primary"

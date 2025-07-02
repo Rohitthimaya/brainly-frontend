@@ -13,7 +13,6 @@ import { BACKEND_URL } from '../config';
 import { Loader } from '../components/Loader';
 import { Logout } from '../icons/LogoutIcon';
 // import { useHash } from '../hooks/useHash';
-import { Sparkles } from 'lucide-react';
 import Askai from './Askai';
 
 export function Dashboard() {

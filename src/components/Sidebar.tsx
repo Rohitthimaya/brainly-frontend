@@ -19,7 +19,7 @@ export function Sidebar({
       {/* Logo */}
       <div className="flex items-center gap-2 text-2xl font-bold text-[--purple-600]">
         <Logo />
-        <span className="text-[var(--purple-600)]">Brainly</span>
+        <span className="text-[var(--purple-600)]">Recalr</span>
       </div>
 
       {/* Nav Items */}
@@ -44,9 +44,15 @@ export function Sidebar({
         />
         <SidebarItem
           icon={<PdfIcon />}
-          text="PDF"
+          text="PDFs"
           active={activeFilter === "pdf"}
           onClick={() => onFilterChange("pdf")}
+        />
+        <SidebarItem
+          icon={<PdfIcon />}
+          text="Docs"
+          active={activeFilter === "docx"}
+          onClick={() => onFilterChange("docx")}
         />
       </nav>
     </aside>

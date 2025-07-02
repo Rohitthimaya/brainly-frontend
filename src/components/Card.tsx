@@ -9,7 +9,7 @@ import { BACKEND_URL } from "../config";
 interface CardProps {
   title: string;
   link: string;
-  type: "tweet" | "youtube" | "pdf";
+  type: "tweet" | "youtube" | "pdf" | "docx";
   id?: string;
   onDelete?: () => void;
 }
@@ -27,6 +27,10 @@ export function Card({ title, link, type, id, onDelete }: CardProps) {
       }
     }
   }, [type, link]);
+
+  const getGoogleDocsViewerUrl = (link: string) => {
+    return `https://docs.google.com/gview?url=${encodeURIComponent(link)}&embedded=true`;
+  };
 
   const deleteContent = async () => {
     try {
@@ -57,7 +61,7 @@ export function Card({ title, link, type, id, onDelete }: CardProps) {
   };
 
   return (
-<div className="p-4 bg-white rounded-xl border border-gray-200 shadow-sm hover:shadow-md transition-shadow duration-200 ease-in-out w-full max-w-[22rem] min-h-[16rem]">      {/* Header */}
+    <div className="p-4 bg-white rounded-xl border border-gray-200 shadow-sm hover:shadow-md transition-shadow duration-200 ease-in-out w-full max-w-[22rem] min-h-[16rem]">      {/* Header */}
       <div className="flex justify-between items-start">
         <div className="flex items-center gap-2 text-[15px] font-medium text-gray-700">
           <div className="text-[var(--purple-600)]">
@@ -100,13 +104,19 @@ export function Card({ title, link, type, id, onDelete }: CardProps) {
           <blockquote className="twitter-tweet">
             <a href={link.replace("x.com", "twitter.com")} />
           </blockquote>
-        ) : (
+        ) : type === "pdf" ? (
           <iframe
             src={link}
             title="PDF viewer"
             className="w-full h-64 rounded-md border"
           />
-        )}
+        ) : type === "docx" ? (
+          <iframe
+            src={getGoogleDocsViewerUrl(link)}
+            title="DOCX viewer"
+            className="w-full h-64 rounded-md border"
+          />
+        ) : null}
       </div>
     </div>
   );
