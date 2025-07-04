@@ -7,6 +7,7 @@ import { AuthProvider } from "./AuthContext";
 import { Brain } from "./pages/Brain";
 import { HashProvider } from "./hooks/useHash";
 import Search from "./pages/Askai";
+import DocumentViewer from "./pages/DocumentViewer";
 
 function App() {
   return (
@@ -20,6 +21,9 @@ function App() {
             <Route path="/ask" element={<Search />}/>
             <Route path="*" element={<Signin />} />
             <Route path="/brain/*" element={<Brain />} />
+            <Route path="/doc/:id" element={<DocumentViewer docLink={undefined} docTitle={""} onClose={function (): void {
+              throw new Error("Function not implemented.");
+            } } docType={""} />} />
           </Routes>
         </BrowserRouter>
       </HashProvider>

@@ -1,19 +1,21 @@
 import { useState } from 'react';
 import { BookOpen, Database, Send } from 'lucide-react';
 import { Button } from '../components/Button';
-import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
+import DocumentModal from './DocumentViewer';
 
 export default function Search() {
-  const navigate = useNavigate();
   const [input, setInput] = useState('');
   const [response, setResponse] = useState<null | {
     answer: string;
     title: string;
     context: string[];
-    link: string;
+    responseLink: string;
+    type: string
   }>(null);
   const [loading, setLoading] = useState(false);
+  const [showModal, setShowModal] = useState(false);
+  const [selectedDoc, setSelectedDoc] = useState('');
 
   const handleSend = async () => {
     if (!input.trim()) return;
@@ -89,15 +91,16 @@ export default function Search() {
         <div className="w-full max-w-6xl bg-white mt-6 p-6 rounded-xl shadow border border-gray-200 transition-opacity duration-500">
           <h2 className="text-lg font-semibold mb-3 text-[var(--purple-600)] flex items-center justify-between">
             {response.title}
-            <a
-              href={response.link}
-              target="_blank"
-              rel="noopener noreferrer"
+            <button
+              onClick={() => {
+                setSelectedDoc(response.title);
+                setShowModal(true);
+              }}
               className="text-gray-400 hover:text-[var(--purple-600)] transition p-1 rounded"
               title="View source"
             >
               <BookOpen className="w-5 h-5" />
-            </a>
+            </button>
           </h2>
           <div className="text-gray-800 space-y-4 leading-relaxed">
             {response.answer
@@ -119,6 +122,19 @@ export default function Search() {
               })}
           </div>
         </div>
+      )}
+
+      {/* Document Modal */}
+      {showModal && (
+        <DocumentModal
+          docType={response ? response.type : ""}
+          docTitle={selectedDoc}
+          docLink={response?.responseLink}
+          onClose={() => {
+            setShowModal(false);
+            setSelectedDoc('');
+          }}
+        />
       )}
     </div>
   );
