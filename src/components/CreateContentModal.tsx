@@ -10,6 +10,7 @@ enum ContentType {
     Twitter = "tweet",
     Pdf = "pdf",
     Docx = "docx",
+    Note = "note",
 }
 
 interface CreateContentModalProps {
@@ -26,6 +27,8 @@ export function CreateContentModal({ open, onClose, onContentCreated }: CreateCo
     const [uploading, setUploading] = useState(false);
     const [error, setError] = useState("");
     const [selectedFileName, setSelectedFileName] = useState<string | null>(null);
+    const [noteText, setNoteText] = useState("");
+
 
     useEffect(() => {
         if (!open) {
@@ -40,22 +43,22 @@ export function CreateContentModal({ open, onClose, onContentCreated }: CreateCo
         const title = titleRef.current?.value;
         const link = linkRef.current?.value;
         const file = fileRef.current?.files?.[0];
-
-        if (!title || (![ContentType.Pdf, ContentType.Docx].includes(type) && !link)) {
+    
+        if (!title || (![ContentType.Pdf, ContentType.Docx].includes(type) && type !== ContentType.Note && !link)) {
             setError("All fields are required.");
             return;
         }
-
+    
         setUploading(true);
         setError("");
-
+    
         try {
             if ([ContentType.Pdf, ContentType.Docx].includes(type) && file) {
                 const formData = new FormData();
                 formData.append("type", type);
                 formData.append("title", title || file.name);
                 formData.append("file", file);
-
+    
                 await axios.post(`${BACKEND_URL}/api/v1/content`, formData, {
                     headers: {
                         "Authorization": "Bearer " + localStorage.getItem("token"),
@@ -64,15 +67,15 @@ export function CreateContentModal({ open, onClose, onContentCreated }: CreateCo
             } else {
                 await axios.post(`${BACKEND_URL}/api/v1/content`, {
                     title,
-                    link,
-                    type
+                    type,
+                    link: type === ContentType.Note ? noteText : link, // Note text sent as 'link'
                 }, {
                     headers: {
                         "Authorization": "Bearer " + localStorage.getItem("token")
                     }
                 });
             }
-
+    
             onClose();
             onContentCreated();
         } catch (err) {
@@ -82,6 +85,7 @@ export function CreateContentModal({ open, onClose, onContentCreated }: CreateCo
             setUploading(false);
         }
     }
+    
 
     if (!open) return null;
 
@@ -102,7 +106,24 @@ export function CreateContentModal({ open, onClose, onContentCreated }: CreateCo
                         <Input reference={titleRef} placeholder="Enter title" />
                     </div>
 
-                    {[ContentType.Pdf, ContentType.Docx].includes(type) ? (
+                    {type === ContentType.Note ? (
+                        <>
+                            {/* <div>
+                                <label className="text-sm font-medium text-gray-700">Title</label>
+                                <Input reference={titleRef} placeholder="Enter title" />
+                            </div> */}
+                            <div>
+                                <label className="text-sm font-medium text-gray-700">What is this memory about?</label>
+                                <textarea
+                                    className="w-full mt-1 p-2 border border-gray-300 rounded-md text-sm resize-none focus:outline-none focus:ring-2 focus:ring-blue-500"
+                                    rows={3}
+                                    placeholder="Write your note here..."
+                                    value={noteText}
+                                    onChange={(e) => setNoteText(e.target.value)}
+                                />
+                            </div>
+                        </>
+                    ) : [ContentType.Pdf, ContentType.Docx].includes(type) ? (
                         <div>
                             <label className="text-sm font-medium text-gray-700">Upload {type.toUpperCase()}</label>
                             <div className="mt-2">
@@ -166,7 +187,12 @@ export function CreateContentModal({ open, onClose, onContentCreated }: CreateCo
                                 active={type === ContentType.Docx}
                                 onClick={() => setType(ContentType.Docx)}
                             />
-
+                            <ContentTypeButton
+                                icon={<DocumentArrowUpIcon className="w-4 h-4" />}
+                                label="Note"
+                                active={type === ContentType.Note}
+                                onClick={() => setType(ContentType.Note)}
+                            />
                         </div>
                     </div>
 

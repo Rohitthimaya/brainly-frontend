@@ -7,16 +7,20 @@ interface Props {
     docLink: string | undefined;
     docType: 'youtube' | 'tweet' | 'pdf' | 'docx' | string;
     onClose: (conversation: { question: string; answer: string }[]) => void;
-}
+    initialConversation?: { question: string; answer: string }[];
+    update?: boolean;
+    historyId?: string;
+  }
+  
 
 interface QA {
     question: string;
     answer: string;
 }
 
-export default function DocumentModal({ docTitle, docLink, docType, onClose }: Props) {
+export default function DocumentModal({ docTitle, docLink, docType, onClose, initialConversation, update, historyId }: Props) {
     const [question, setQuestion] = useState('');
-    const [conversation, setConversation] = useState<QA[]>([]);
+    const [conversation, setConversation] = useState<QA[]>(initialConversation || []);
     const [loading, setLoading] = useState(false);
     const [copiedIndex, setCopiedIndex] = useState<number | null>(null);
 
@@ -60,9 +64,48 @@ export default function DocumentModal({ docTitle, docLink, docType, onClose }: P
         }
     };
 
-    const handleClose = () => {
-        onClose(conversation);
-    };
+    const handleClose = async () => {
+        try {
+          if (conversation.length > 0 && docLink) {
+            const token = localStorage.getItem("token");
+      
+            const payload = {
+              title: docTitle,
+              contentLink: docLink,
+              chats: conversation,
+              type: docType
+            };
+      
+            if (update && historyId) {
+              await axios.put(
+                `http://localhost:3000/api/v1/conversations/history/${historyId}`,
+                payload,
+                {
+                  headers: {
+                    Authorization: `Bearer ${token}`
+                  }
+                }
+              );
+            } else {
+              await axios.post(
+                "http://localhost:3000/api/v1/conversations/history",
+                payload,
+                {
+                  headers: {
+                    Authorization: `Bearer ${token}`
+                  }
+                }
+              );
+            }
+          }
+        } catch (err) {
+          console.error("Failed to save or update chat history:", err);
+        } finally {
+          onClose(conversation);
+        }
+      };
+      
+    
 
     const getYoutubeEmbedUrl = (link: string) => {
         const match = link.match(/(?:youtube\.com\/watch\?v=|youtu\.be\/)([a-zA-Z0-9_-]{11})/);
@@ -113,6 +156,8 @@ export default function DocumentModal({ docTitle, docLink, docType, onClose }: P
                 return null;
         }
     };
+
+    console.log(conversation)
 
     return (
         <div className="fixed inset-0 bg-black bg-opacity-60 flex items-center justify-center z-50">

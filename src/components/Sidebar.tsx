@@ -5,6 +5,9 @@ import { PdfIcon } from "../icons/PdfIcon";
 import { TwitterIcon } from "../icons/TwitterIcon";
 import { YoutubeIcon } from "../icons/YoutubeIcon";
 import { SidebarItem } from "./SidebarItem";
+import { DocxIcon } from "../icons/Docx";
+import {ChatHistoryIcon} from "../icons/ChatHistoryIcon";
+import { NoteIcon } from "../icons/NoteIcon";
 
 export function Sidebar({
   onFilterChange,
@@ -49,10 +52,22 @@ export function Sidebar({
           onClick={() => onFilterChange("pdf")}
         />
         <SidebarItem
-          icon={<PdfIcon />}
+          icon={<DocxIcon/>}
           text="Docs"
           active={activeFilter === "docx"}
           onClick={() => onFilterChange("docx")}
+        />
+        <SidebarItem
+          icon={<NoteIcon />} // ✅ new icon
+          text="Notes"
+          active={activeFilter === "note"}
+          onClick={() => onFilterChange("note")} // ✅ filter type "note"
+        />
+        <SidebarItem
+          icon={<ChatHistoryIcon/>}
+          text="Chat History"
+          active={activeFilter === "history"}
+          onClick={() => onFilterChange("history")}
         />
       </nav>
     </aside>

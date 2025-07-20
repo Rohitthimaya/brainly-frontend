@@ -3,13 +3,16 @@ import { ShareIcon } from "../icons/ShareIcon";
 import { DeleteIcon } from "../icons/DeleteIcon";
 import { TwitterIcon } from "../icons/TwitterIcon";
 import { YoutubeIcon } from "../icons/YoutubeIcon";
+import { NoteIcon } from "../icons/NoteIcon";
 import axios from "axios";
 import { BACKEND_URL } from "../config";
+import { PdfIcon } from "../icons/PdfIcon";
+import { DocxIcon } from "../icons/Docx";
 
 interface CardProps {
   title: string;
   link: string;
-  type: "tweet" | "youtube" | "pdf" | "docx";
+  type: "tweet" | "youtube" | "pdf" | "docx" | "note";
   id?: string;
   onDelete?: () => void;
 }
@@ -65,7 +68,20 @@ export function Card({ title, link, type, id, onDelete }: CardProps) {
       <div className="flex justify-between items-start">
         <div className="flex items-center gap-2 text-[15px] font-medium text-gray-700">
           <div className="text-[var(--purple-600)]">
-            {type === "youtube" ? <YoutubeIcon /> : <TwitterIcon />}
+            {type === "youtube" ? (
+              <YoutubeIcon />
+            ) : type === "tweet" ? (
+              <TwitterIcon />
+            ) : type === "note" ? (
+              <span className="text-sm font-bold">
+                <NoteIcon />
+              </span>
+            ) : type === "pdf" ? (
+              <PdfIcon />
+            ): type === "docx" ? (
+              <DocxIcon />
+            ): null}
+
           </div>
           <span className="truncate max-w-[10rem]">{title}</span>
         </div>
@@ -116,6 +132,10 @@ export function Card({ title, link, type, id, onDelete }: CardProps) {
             title="DOCX viewer"
             className="w-full h-64 rounded-md border"
           />
+        ) : type === "note" ? (
+          <div className="bg-gray-100 p-4 rounded-md text-sm text-gray-700 whitespace-pre-wrap">
+            {link}
+          </div>
         ) : null}
       </div>
     </div>
