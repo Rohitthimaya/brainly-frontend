@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { BookOpen, Database, Send } from 'lucide-react';
+import { FileText, Database, Send } from 'lucide-react';
 import { Button } from '../components/Button';
 import axios from 'axios';
 import DocumentModal from './DocumentViewer';
@@ -73,7 +73,7 @@ export default function Search() {
                 : 'bg-[var(--purple-600)] hover:bg-[var(--purple-500)]'
             }`}
           >
-            <Send className="w-5 h-5 text-white rotate-45" />
+            <Send className="w-5 h-5 text-white rotate-45 cursor-pointer" />
           </button>
         </div>
       </div>
@@ -99,7 +99,7 @@ export default function Search() {
               className="text-gray-400 hover:text-[var(--purple-600)] transition p-1 rounded"
               title="View source"
             >
-              <BookOpen className="w-5 h-5" />
+              <FileText className="w-5 h-5 cursor-pointer" />
             </button>
           </h2>
           <div className="text-gray-800 space-y-4 leading-relaxed">

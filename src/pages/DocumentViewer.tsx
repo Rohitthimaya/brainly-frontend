@@ -10,15 +10,22 @@ interface Props {
     initialConversation?: { question: string; answer: string }[];
     update?: boolean;
     historyId?: string;
-  }
-  
+}
 
 interface QA {
     question: string;
     answer: string;
 }
 
-export default function DocumentModal({ docTitle, docLink, docType, onClose, initialConversation, update, historyId }: Props) {
+export default function DocumentModal({
+    docTitle,
+    docLink,
+    docType,
+    onClose,
+    initialConversation,
+    update,
+    historyId,
+}: Props) {
     const [question, setQuestion] = useState('');
     const [conversation, setConversation] = useState<QA[]>(initialConversation || []);
     const [loading, setLoading] = useState(false);
@@ -39,7 +46,6 @@ export default function DocumentModal({ docTitle, docLink, docType, onClose, ini
 
     const handleQuestion = async () => {
         if (!question.trim()) return;
-
         const currentQuestion = question;
         setQuestion('');
         setLoading(true);
@@ -54,11 +60,10 @@ export default function DocumentModal({ docTitle, docLink, docType, onClose, ini
                     },
                 }
             );
-
-            setConversation(prev => [...prev, { question: currentQuestion, answer: res.data.answer }]);
+            setConversation((prev) => [...prev, { question: currentQuestion, answer: res.data.answer }]);
         } catch (err) {
             console.error('Error asking question:', err);
-            setConversation(prev => [...prev, { question: currentQuestion, answer: '⚠️ Error fetching response.' }]);
+            setConversation((prev) => [...prev, { question: currentQuestion, answer: '⚠️ Error fetching response.' }]);
         } finally {
             setLoading(false);
         }
@@ -66,46 +71,35 @@ export default function DocumentModal({ docTitle, docLink, docType, onClose, ini
 
     const handleClose = async () => {
         try {
-          if (conversation.length > 0 && docLink) {
-            const token = localStorage.getItem("token");
-      
-            const payload = {
-              title: docTitle,
-              contentLink: docLink,
-              chats: conversation,
-              type: docType
-            };
-      
-            if (update && historyId) {
-              await axios.put(
-                `http://localhost:3000/api/v1/conversations/history/${historyId}`,
-                payload,
-                {
-                  headers: {
-                    Authorization: `Bearer ${token}`
-                  }
+            if (conversation.length > 0 && docLink) {
+                const token = localStorage.getItem('token');
+                const payload = {
+                    title: docTitle,
+                    contentLink: docLink,
+                    chats: conversation,
+                    type: docType,
+                };
+
+                if (update && historyId) {
+                    await axios.put(
+                        `http://localhost:3000/api/v1/conversations/history/${historyId}`,
+                        payload,
+                        { headers: { Authorization: `Bearer ${token}` } }
+                    );
+                } else {
+                    await axios.post(
+                        'http://localhost:3000/api/v1/conversations/history',
+                        payload,
+                        { headers: { Authorization: `Bearer ${token}` } }
+                    );
                 }
-              );
-            } else {
-              await axios.post(
-                "http://localhost:3000/api/v1/conversations/history",
-                payload,
-                {
-                  headers: {
-                    Authorization: `Bearer ${token}`
-                  }
-                }
-              );
             }
-          }
         } catch (err) {
-          console.error("Failed to save or update chat history:", err);
+            console.error('Failed to save or update chat history:', err);
         } finally {
-          onClose(conversation);
+            onClose(conversation);
         }
-      };
-      
-    
+    };
 
     const getYoutubeEmbedUrl = (link: string) => {
         const match = link.match(/(?:youtube\.com\/watch\?v=|youtu\.be\/)([a-zA-Z0-9_-]{11})/);
@@ -118,7 +112,6 @@ export default function DocumentModal({ docTitle, docLink, docType, onClose, ini
 
     const renderContent = () => {
         if (!docLink) return null;
-
         switch (docType) {
             case 'youtube':
                 return (
@@ -137,13 +130,7 @@ export default function DocumentModal({ docTitle, docLink, docType, onClose, ini
                     </blockquote>
                 );
             case 'pdf':
-                return (
-                    <iframe
-                        src={docLink}
-                        title="PDF viewer"
-                        className="w-full h-[75vh] rounded-md"
-                    />
-                );
+                return <iframe src={docLink} title="PDF viewer" className="w-full h-[75vh] rounded-md" />;
             case 'docx':
                 return (
                     <iframe
@@ -157,29 +144,24 @@ export default function DocumentModal({ docTitle, docLink, docType, onClose, ini
         }
     };
 
-    console.log(conversation)
-
     return (
-        <div className="fixed inset-0 bg-black bg-opacity-60 flex items-center justify-center z-50">
-            <div className="w-[90vw] h-[90vh] bg-white rounded-xl shadow-lg overflow-hidden flex">
-                {/* Left Panel - Content */}
-                <div className="w-2/3 bg-black p-6 flex flex-col items-center overflow-y-auto">
+        <div className="fixed inset-0 bg-black bg-opacity-60 flex items-center justify-center z-50 px-2">
+            <div className="w-full max-w-7xl h-[95vh] bg-white rounded-xl shadow-lg overflow-hidden flex flex-col md:flex-row">
+                {/* Left Panel */}
+                <div className="w-full md:w-2/3 bg-black p-4 md:p-6 flex flex-col items-center overflow-y-auto">
                     <div className="w-full flex justify-between items-center mb-4">
-                        <h1 className="text-white text-xl font-semibold">{docTitle}</h1>
+                        <h1 className="text-white text-lg md:text-xl font-semibold">{docTitle}</h1>
                         <button onClick={handleClose} className="text-white hover:text-gray-400">
-                            <X className="w-5 h-5" />
+                            <X className="w-5 h-5 cursor-pointer" />
                         </button>
                     </div>
-                    <div className="w-full max-w-3xl mb-6">
-                        {renderContent()}
-                    </div>
+                    <div className="w-full max-w-3xl mb-6">{renderContent()}</div>
                 </div>
 
-                {/* Right Panel - Chat */}
-                <div className="w-1/3 h-full bg-[#1f1f1f] text-white flex flex-col border-l border-gray-700">
+                {/* Right Panel */}
+                <div className="w-full md:w-1/3 h-[50vh] md:h-full bg-[#1f1f1f] text-white flex flex-col border-t md:border-t-0 md:border-l border-gray-700">
                     <div className="flex border-b border-gray-700">
                         <div className="px-4 py-3 border-b-2 border-white font-semibold">Chat</div>
-                        {/* <div className="px-4 py-3 text-gray-400 hover:text-white cursor-pointer">Notes</div> */}
                     </div>
 
                     <div className="flex-1 overflow-y-auto px-4 py-4 space-y-4 text-sm">
@@ -191,8 +173,6 @@ export default function DocumentModal({ docTitle, docLink, docType, onClose, ini
                             <div key={idx} className="bg-[#2a2a2a] p-3 rounded-md relative group">
                                 <p className="text-purple-400 font-semibold">{qa.question}</p>
                                 <pre className="text-gray-100 mt-1 whitespace-pre-wrap">{qa.answer}</pre>
-
-                                {/* Copy Icon Button */}
                                 <button
                                     onClick={() => {
                                         navigator.clipboard.writeText(qa.answer);
@@ -204,8 +184,6 @@ export default function DocumentModal({ docTitle, docLink, docType, onClose, ini
                                 >
                                     <Copy size={16} />
                                 </button>
-
-                                {/* Copied Message */}
                                 {copiedIndex === idx && (
                                     <span className="absolute -top-6 right-2 text-xs text-green-400 bg-black bg-opacity-80 px-2 py-1 rounded shadow">
                                         Copied!
@@ -214,23 +192,20 @@ export default function DocumentModal({ docTitle, docLink, docType, onClose, ini
                             </div>
                         ))}
 
-
-
                         {loading && (
                             <div className="bg-[#2a2a2a] p-3 rounded-md flex flex-col gap-2">
                                 <p className="text-purple-400 font-semibold">{question}</p>
                                 <div className="flex items-center gap-2 text-gray-400">
                                     <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin" />
-                                    {/* <span>Loading response...</span> */}
                                 </div>
                             </div>
                         )}
                     </div>
 
-                    <div className="p-4 border-t border-gray-700 space-y-2">
-                        <div className="relative">
+                    <div className="p-4 border-t border-gray-700">
+                        <div className="flex items-center gap-2">
                             <textarea
-                                className="w-full resize-none bg-[#2b2b2b] text-white placeholder-gray-400 rounded-md px-3 py-2 pr-20 text-sm border border-gray-600 focus:outline-none focus:ring-2 focus:ring-purple-500"
+                                className="flex-1 resize-none bg-[#2b2b2b] text-white placeholder-gray-400 rounded-md px-3 py-2 text-sm border border-gray-600 focus:outline-none focus:ring-2 focus:ring-purple-500"
                                 rows={1}
                                 placeholder="Ask your question here..."
                                 value={question}
@@ -245,12 +220,13 @@ export default function DocumentModal({ docTitle, docLink, docType, onClose, ini
                             <button
                                 onClick={handleQuestion}
                                 disabled={loading}
-                                className="absolute right-2 top-1/2 -translate-y-1/2 bg-purple-600 text-white px-3 py-1 rounded-md hover:bg-purple-500 transition disabled:opacity-50"
+                                className="h-[38px] cursor-pointer bg-purple-600 text-white px-4 py-1.5 rounded-md hover:bg-purple-500 transition disabled:opacity-50"
                             >
                                 Ask
                             </button>
                         </div>
                     </div>
+
                 </div>
             </div>
         </div>

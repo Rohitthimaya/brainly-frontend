@@ -43,22 +43,22 @@ export function CreateContentModal({ open, onClose, onContentCreated }: CreateCo
         const title = titleRef.current?.value;
         const link = linkRef.current?.value;
         const file = fileRef.current?.files?.[0];
-    
+
         if (!title || (![ContentType.Pdf, ContentType.Docx].includes(type) && type !== ContentType.Note && !link)) {
             setError("All fields are required.");
             return;
         }
-    
+
         setUploading(true);
         setError("");
-    
+
         try {
             if ([ContentType.Pdf, ContentType.Docx].includes(type) && file) {
                 const formData = new FormData();
                 formData.append("type", type);
                 formData.append("title", title || file.name);
                 formData.append("file", file);
-    
+
                 await axios.post(`${BACKEND_URL}/api/v1/content`, formData, {
                     headers: {
                         "Authorization": "Bearer " + localStorage.getItem("token"),
@@ -75,7 +75,7 @@ export function CreateContentModal({ open, onClose, onContentCreated }: CreateCo
                     }
                 });
             }
-    
+
             onClose();
             onContentCreated();
         } catch (err) {
@@ -85,15 +85,16 @@ export function CreateContentModal({ open, onClose, onContentCreated }: CreateCo
             setUploading(false);
         }
     }
-    
+
 
     if (!open) return null;
 
     return (
-        <div className="fixed inset-0 z-50 flex items-center justify-center">
-            <div className="fixed inset-0 bg-black/30 backdrop-blur-sm"></div>
+        <div className="fixed inset-0 z-50 flex items-center justify-center px-2 sm:px-4">
+            <div className="fixed inset-0 bg-black/30 backdrop-blur-sm" />
 
-            <div className="bg-white shadow-2xl rounded-2xl p-6 w-full max-w-md z-10 space-y-5 relative animate-fade-in">
+            <div className="bg-white shadow-2xl rounded-2xl w-full max-w-md max-h-[90vh] overflow-y-auto p-4 sm:p-6 z-10 space-y-5 relative animate-fade-in">
+
                 <button onClick={onClose} className="absolute top-3 right-3 p-1 text-gray-500 hover:text-red-600">
                     <XMarkIcon className="h-5 w-5" />
                 </button>
@@ -115,7 +116,7 @@ export function CreateContentModal({ open, onClose, onContentCreated }: CreateCo
                             <div>
                                 <label className="text-sm font-medium text-gray-700">What is this memory about?</label>
                                 <textarea
-                                    className="w-full mt-1 p-2 border border-gray-300 rounded-md text-sm resize-none focus:outline-none focus:ring-2 focus:ring-blue-500"
+                                    className="w-full rounded-lg border border-gray-300 px-4 py-3 text-base sm:text-lg resize-y focus:outline-none focus:ring-2 focus:ring-blue-500"
                                     rows={3}
                                     placeholder="Write your note here..."
                                     value={noteText}
@@ -201,7 +202,7 @@ export function CreateContentModal({ open, onClose, onContentCreated }: CreateCo
                     <div className="">
                         <Button
                             onClick={addContent}
-                            text={uploading ? "Uploading..." : "Submit"}
+                            text={uploading ? <span>Uploading...</span> : <span>Submit</span>}
                             variant="primary"
                             disabled={uploading}
                         />

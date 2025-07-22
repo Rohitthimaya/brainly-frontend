@@ -100,7 +100,7 @@ export function Dashboard() {
             <Button
               onClick={() => setModalOpen(true)}
               variant='primary'
-              text='Add content'
+              text={<span className="hidden md:inline">Add content</span>}
               startIcon={<PlusIcon />}
             />
             <Button
@@ -125,7 +125,7 @@ export function Dashboard() {
                 }
               }}
               variant='secondary'
-              text='Share brain'
+              text={<span className="hidden md:inline">Share brain</span>}
               startIcon={<ShareIcon />}
             />
           </div>
@@ -139,7 +139,7 @@ export function Dashboard() {
                 navigate("/signin");
               }}
               variant='primary'
-              text='Logout'
+              text={<span className="hidden md:inline">Logout</span>}
             />
           </div>
         </div>

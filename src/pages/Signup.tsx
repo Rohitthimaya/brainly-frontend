@@ -42,7 +42,7 @@ export function Signup() {
       <div className="w-full h-48 bg-[linear-gradient(120deg,_#7164c0,_#9492db,_#d9ddee)] rounded-b-3xl shadow-md">
         {/* TOP LOGO */}
         <div className="w-full flex ml-8 justify pt-8">
-          <h1 className="text-2xl font-bold text-white drop-shadow-sm">Brainly</h1>
+          <h1 className="text-2xl font-bold text-white drop-shadow-sm">Recalr</h1>
         </div>
       </div>
 
