@@ -22,6 +22,7 @@ export function SidebarItem({
     >
       <div className="w-6 h-6">{icon}</div>
       <span className="text-sm font-medium">{text}</span>
+
     </div>
   );
 }

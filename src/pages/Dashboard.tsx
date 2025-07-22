@@ -15,6 +15,7 @@ import { Logout } from '../icons/LogoutIcon';
 import Askai from './Askai';
 import { timeAgo } from '../utils';
 import DocumentModal from './DocumentViewer';
+import { Menu } from 'lucide-react';
 
 export function Dashboard() {
   const [modalOpen, setModalOpen] = useState(false);
@@ -25,6 +26,7 @@ export function Dashboard() {
   const [filter, setFilter] = useState("home");
   const [historyContent, setHistoryContent] = useState<any[]>([]);
   const [isHistoryLoading, setIsHistoryLoading] = useState(false);
+  const [sidebarOpen, setSidebarOpen] = useState(false); // ✅
 
   interface HistoryState {
     docTitle: string;
@@ -70,10 +72,22 @@ export function Dashboard() {
   if (isLoading) return <Loader />;
 
   return (
-    <div>
-      <Sidebar onFilterChange={setFilter} activeFilter={filter} />
+    <div className="flex">
+      <Sidebar
+        onFilterChange={setFilter}
+        activeFilter={filter}
+        isOpen={sidebarOpen}
+        onClose={() => setSidebarOpen(false)}
+      />
 
-      <div className='p-4 ml-72 min-h-screen bg-gray-100 border-1'>
+      <div className={`flex-1 min-h-screen bg-gray-100 p-4 transition-all duration-300`}>
+        {/* Hamburger menu for mobile */}
+        <div className="md:hidden mb-4">
+          <button onClick={() => setSidebarOpen(true)}>
+            <Menu className="w-6 h-6 text-gray-700" />
+          </button>
+        </div>
+
         <CreateContentModal
           open={modalOpen}
           onClose={() => setModalOpen(false)}
@@ -147,7 +161,6 @@ export function Dashboard() {
                     key={_id}
                     className="flex justify-between items-center border-b border-gray-300 pb-3"
                   >
-                    {/* Left: Clickable area */}
                     <div
                       onClick={async () => {
                         try {
@@ -181,10 +194,9 @@ export function Dashboard() {
                       <p className="text-sm text-gray-500">🕓 {timeAgo(new Date(createdAt))}</p>
                     </div>
 
-                    {/* Right: Delete button */}
                     <button
                       onClick={async (e) => {
-                        e.stopPropagation(); // prevent click propagation
+                        e.stopPropagation();
                         if (!window.confirm("Are you sure you want to delete this history?")) return;
 
                         try {
