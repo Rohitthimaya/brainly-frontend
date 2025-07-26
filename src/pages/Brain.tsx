@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { Card2 } from "../components/Card2";
+import { Card } from "../components/Card";
 import axios from "axios";
 import { BACKEND_URL } from "../config";
 import { Loader } from "../components/Loader";
@@ -25,7 +25,7 @@ export function Brain() {
 
     return <div className='flex gap-4 flex-wrap'>
         {contents.map(({ type, link, title }) => (
-            <Card2 key={link} type={type} link={link} title={title} />
+            <Card key={link} type={type} link={link} title={title} />
         ))}
     </div>
 }

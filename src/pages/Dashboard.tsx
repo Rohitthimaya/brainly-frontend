@@ -103,7 +103,7 @@ export function Dashboard() {
               text={<span className="hidden md:inline">Add content</span>}
               startIcon={<PlusIcon />}
             />
-            <Button
+            {/* <Button
               onClick={async () => {
                 try {
                   const response = await axios.post(
@@ -127,7 +127,7 @@ export function Dashboard() {
               variant='secondary'
               text={<span className="hidden md:inline">Share brain</span>}
               startIcon={<ShareIcon />}
-            />
+            /> */}
           </div>
 
           <div className='flex gap-4'>
