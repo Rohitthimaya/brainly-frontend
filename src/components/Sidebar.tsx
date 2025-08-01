@@ -47,7 +47,7 @@ export function Sidebar({
       </div>
 
       {/* Logo */}
-      <div className="flex items-center gap-2 text-2xl font-bold px-6 text-[--purple-600]">
+      <div className="flex items-center gap-2 mt-4 text-2xl font-bold px-6 text-[--purple-600]">
         <Logo />
         <span className="text-[var(--purple-600)]">Recalr</span>
       </div>

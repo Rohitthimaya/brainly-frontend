@@ -26,8 +26,7 @@ export function Dashboard() {
   const [filter, setFilter] = useState("home");
   const [historyContent, setHistoryContent] = useState<any[]>([]);
   const [isHistoryLoading, setIsHistoryLoading] = useState(false);
-  const [sidebarOpen, setSidebarOpen] = useState(false); // ✅
-
+  const [sidebarOpen, setSidebarOpen] = useState(false);
   interface HistoryState {
     docTitle: string;
     docLink: string;
